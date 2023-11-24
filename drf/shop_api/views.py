@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from .permissions import IsRepresentOrReadOnly
 from . import serializers
 from .models import User, Category, Product, Order
+from .filters import ProductFilter
 
 
 class UserListView(generics.ListCreateAPIView):
@@ -33,6 +34,7 @@ class ProductListView(generics.ListCreateAPIView):
     permission_classes = [IsRepresentOrReadOnly]
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
+    filterset_class = ProductFilter
 
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
