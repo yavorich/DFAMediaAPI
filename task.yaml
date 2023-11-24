@@ -1,0 +1,1056 @@
+openapi: 3.0.3
+info:
+  title: Тестовое задание
+  version: 1.0.0
+  description: "Тестовое задания на позицию backend разработчика в DFA-MEDIA. \n\n Внимание! Роуты opt-orders/ заменяют orders/ \n\n opt-orders (optionally orders) входит в категорию допольнтельных заданий, за которое можно получить больше баллов. \n\n\n Желаем удачи!"
+paths:
+  /users/:
+    get:
+      operationId: users_list
+      tags:
+        - Базовые задачи
+      description: |
+        Отдает список пользователей
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      parameters:
+        - description: Роль Пользователя
+          in: query
+          name: role
+          required: false
+          schema:
+            type: string
+            format: string
+          example: "represent"
+
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    post:
+      operationId: users_create
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSerializers'
+        required: true
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+  /users/{id}/:
+    get:
+      operationId: users_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - Базовые задачи
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    patch:
+      operationId: users_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSerializers'
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSerializers'
+          description: ''
+    delete:
+      operationId: users_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this user.
+          required: true
+      tags:
+        - Базовые задачи
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '204':
+          description: No response body
+  /category/:
+    get:
+      operationId: category_list
+      tags:
+        - Базовые задачи
+      description: |
+        Отдает список категорий
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategorySerializers'
+          description: ''
+    post:
+      operationId: category_create
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategorySerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CategorySerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CategorySerializers'
+        required: true
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySerializers'
+          description: ''
+  /category/{id}/:
+    get:
+      operationId: category_retrieve
+      description: "Данный метод должен полностью отображать дерево категорий"
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this category.
+          required: true
+      tags:
+        - Базовые задачи
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySerializers'
+              example:
+                { "id": 1,
+                  "title": "Игрушки",
+                  "parent_category": null,
+                  "created_at": "2023-05-01T09:03:37.519Z",
+                  "updated_at": "2023-05-01T09:03:37.519Z",
+                  "children_category": [
+                    {
+                      "id": 2,
+                      "title": "Машинки",
+                      "parent_category": 1,
+                      "created_at": "2023-05-01T09:03:37.519Z",
+                      "updated_at": "2023-05-01T09:03:37.519Z",
+                      "children_category": [
+                        {
+                          "id": 4,
+                          "title": "Hot wheels",
+                          "parent_category": 2,
+                          "created_at": "2023-05-01T09:03:37.519Z",
+                          "updated_at": "2023-05-01T09:03:37.519Z",
+                          "children_category": null
+                        }
+                      ]
+                    },
+                    {
+                      "id": 3,
+                      "title": "Куклы",
+                      "parent_category": 1,
+                      "created_at": "2023-05-01T09:03:37.519Z",
+                      "updated_at": "2023-05-01T09:03:37.519Z",
+                      "children_category": null
+                    }
+                  ]
+                }
+          description: ''
+    patch:
+      operationId: category_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this category.
+          required: true
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategorySerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategorySerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategorySerializers'
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySerializers'
+          description: ''
+    delete:
+      operationId: category_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this category.
+          required: true
+      tags:
+        - Базовые задачи
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '204':
+          description: No response body
+  /products/:
+    get:
+      operationId: products_list
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      parameters:
+        - in: query
+          name: created_at
+          description: Фильтр по дате создания
+          schema:
+            type: string
+            format: date
+          required: false
+        - in: query
+          name: category_id
+          description: Фильтр по id категории
+          schema:
+            type: integer
+          required: false
+        - in: query
+          name: price
+          description: Фильтр по цене
+          schema:
+            type: number
+            format: float
+          required: false
+        - in: query
+          name: in_stock
+          description: Фильтр по наличию на складе
+          schema:
+            type: boolean
+          required: false
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductSerializers'
+          description: ''
+    post:
+      operationId: products_create
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProductSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProductSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSerializers'
+          description: ''
+  /products/{id}/:
+    get:
+      operationId: products_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSerializers'
+          description: ''
+
+    patch:
+      operationId: products_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProductSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProductSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProductSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSerializers'
+          description: ''
+    delete:
+      operationId: products_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this product.
+        required: true
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /orders/:
+    get:
+      operationId: orders_list
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    post:
+      operationId: orders_create
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderSerializers'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+  /orders/{id}/:
+    get:
+      operationId: orders_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    patch:
+      operationId: orders_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+        - Базовые задачи
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOrderSerializers'
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+          description: ''
+    delete:
+      operationId: orders_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this order.
+        required: true
+      tags:
+        - Базовые задачи
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /opt-orders/:
+    get:
+      operationId: opt_orders_list
+      tags:
+        - Дополнительные задания
+      description: |
+        База данных и модели должны быть спроектированы таким образом, чтобы цены товаров, содержащиеся в заказах, не зависли от текущий цены товара (вместе с заказом должны сохраняться товары их цены на момент покупки).
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderSerializers'
+              example:
+                [
+                  {
+                  "product": [
+                    {
+                      "id": 2,
+                      "price": 300,
+                      "quantity": 10
+                    },
+                    {
+                      "id": 3,
+                      "price": 400,
+                      "quantity": 7
+                    },
+                    {
+                      "id": 1,
+                      "price": 400,
+                      "quantity": 15
+                    }
+                  ],
+                  "customer": 1,
+                  "status": "success",
+                  "created_at": "2023-05-01T09:36:12.752Z",
+                  "updated_at": "2023-05-01T09:36:12.752Z",
+                }
+                ]
+          description: ''
+    post:
+      operationId: opt_orders_create
+      description: |
+        База данных и модели должны быть спроектированы таким образом, чтобы цены товаров, содержащиеся в заказах, не зависли от текущий цены товара (вместе с заказом должны сохраняться товары их цены на момент покупки).
+      tags:
+        - Дополнительные задания
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        minimum: 1
+                      quantity:
+                        type: integer
+                        minimum: 1
+                    required:
+                      - id
+                      - quantity
+                customer:
+                  type: integer
+                  minimum: 1
+              required:
+                - product
+                - customer
+            example:
+              product:
+                - id: 2
+                  quantity: 10
+                - id: 3
+                  quantity: 7
+                - id: 1
+                  quantity: 15
+              customer: 1
+        required: true
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSerializers'
+              example:
+                {
+                  "product": [
+                    {
+                      "id": 2,
+                      "price": 300,
+                      "quantity": 10
+                    },
+                    {
+                      "id": 3,
+                      "price": 400,
+                      "quantity": 7
+                    },
+                    {
+                      "id": 1,
+                      "price": 400,
+                      "quantity": 15
+                    }
+                  ],
+                  "customer": 1,
+                  "status": "waiting",
+                  "created_at": "2023-05-01T09:36:12.752Z",
+                  "updated_at": "2023-05-01T09:36:12.752Z",
+                }
+          description: ''
+  /notification/:
+    post:
+      operationId: notification
+      description:
+        "Создания заявки оповещения на почту, о появлении товара, если на момент просмотра пользователем товара не было на складе. Вместо отправки сообщения на почту следует
+        создать текстовый файл с сообщением. \n\n
+        
+        Письмо должно быть следующего формата: \n\n
+        Добрый день! Недавно вы интересовались товаром X. Этот товар теперь в наличии. Если вам подходит этот вариант - пожалуйста, свяжитесь с нами. Где Х — это название товара."
+      tags:
+        - Дополнительные задания
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                  minimum: 1
+              required:
+                - product
+                - customer
+            example:
+              product_id: 1
+        required: true
+      security:
+        - cookieAuth: [ ]
+        - basicAuth: [ ]
+        - { }
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              example:
+                {
+                  "status": "created"
+                }
+
+  /special-offer/:
+    get:
+      operationId: special_offer_get
+      tags:
+        - Дополнительные задания
+      description: Получить текущее специальное предложение.
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+        - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecialOffer'
+          description: ''
+    patch:
+      operationId: special_offer_update
+      tags:
+        - Дополнительные задания
+      description: Обновить текущее специальное предложение. Создаст новое предложение, если еще не существует.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpecialOffer'
+        required: true
+      security:
+        - cookieAuth: []
+        - basicAuth: []
+        - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SpecialOffer'
+          description: ''
+components:
+  schemas:
+    CategorySerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Роль
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        parent_category:
+          type: integer
+          nullable: true
+      required:
+        - created_at
+        - id
+        - title
+        - updated_at
+    OrderSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        customer:
+          type: integer
+        products:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+      required:
+        - created_at
+        - customer
+        - id
+        - products
+        - status
+        - updated_at
+    PatchedCategorySerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Роль
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        parent_category:
+          type: integer
+          nullable: true
+    PatchedOrderSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        customer:
+          type: integer
+        products:
+          type: array
+          items:
+            type: integer
+          readOnly: true
+    PatchedProductSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Роль
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        in_stock:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        category:
+          type: integer
+    PatchedUserSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          title: Пароль
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+          title: Последний вход
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          nullable: true
+          title: Имя
+          maxLength: 31
+        last_name:
+          type: string
+          nullable: true
+          title: Фамилия
+          maxLength: 31
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: Аватар
+        role:
+          allOf:
+            - $ref: '#/components/schemas/RoleEnum'
+          title: Роль
+    ProductSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Роль
+          maxLength: 100
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        in_stock:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        category:
+          type: integer
+      required:
+        - category
+        - created_at
+        - description
+        - id
+        - in_stock
+        - price
+        - title
+        - updated_at
+    RoleEnum:
+      enum:
+        - represent
+        - client
+      type: string
+      description: |-
+        * `represent` - Represent
+        * `client` - Client
+    StatusEnum:
+      enum:
+        - cancel
+        - waiting
+        - success
+      type: string
+      description: |-
+        * `cancel` - Cancel
+        * `waiting` - Waiting
+        * `success` - Success
+    UserSerializers:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          title: Пароль
+          maxLength: 128
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+          title: Последний вход
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          nullable: true
+          title: Имя
+          maxLength: 31
+        last_name:
+          type: string
+          nullable: true
+          title: Фамилия
+          maxLength: 31
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+          title: Аватар
+        role:
+          allOf:
+            - $ref: '#/components/schemas/RoleEnum'
+          title: Роль
+      required:
+        - email
+        - id
+        - password
+    SpecialOffer:
+        type: object
+        properties:
+          id:
+            type: integer
+            readOnly: true
+          title:
+            type: string
+            maxLength: 255
+          description:
+            type: string
+          start_date:
+            type: string
+            format: date-time
+          end_date:
+            type: string
+            format: date-time
+        required:
+          - title
+          - description
+          - start_date
+          - end_date
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
