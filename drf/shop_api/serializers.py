@@ -48,6 +48,9 @@ class OptOrderSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def is_sufficient_quantity_available(validated_data):
+        '''
+        Более общий случай, когда товар есть, но клиент заказал больше
+        '''
         items_data = validated_data["items"]
         valid = True
         for item_data in items_data:
@@ -55,14 +58,19 @@ class OptOrderSerializer(serializers.ModelSerializer):
             quantity = item_data["quantity"]
             if quantity > product.in_stock:
                 valid = False
-                ProductWaitList.objects.create(
+                ProductWaitList.objects.update_or_create(
                     product=product,
                     customer=validated_data["customer"],
-                    quantity_need=quantity
+                    defaults={"quantity_need": quantity}
                 )
+            else:
+                ProductWaitList.objects.filter(
+                    product=product, customer=validated_data["customer"]
+                ).delete()
         return valid
 
     def create(self, validated_data):
+        # проверка на наличие товаров на складе
         if not self.is_sufficient_quantity_available(validated_data):
             raise serializers.ValidationError(
                 "Некоторых товаров не хватает"
