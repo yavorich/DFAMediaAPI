@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Category, Product, Order, User, OrderItem
+from .models import Category, Product, Order, \
+    User, OrderItem, ProductWaitList
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -45,7 +46,28 @@ class OptOrderSerializer(serializers.ModelSerializer):
         fields = ("items", "customer", "status", "created_at", "updated_at")
         read_only_fields = ("created_at", "updated_at")
 
+    @staticmethod
+    def is_sufficient_quantity_available(validated_data):
+        items_data = validated_data["items"]
+        valid = True
+        for item_data in items_data:
+            product = item_data["product"]
+            quantity = item_data["quantity"]
+            if quantity > product.in_stock:
+                valid = False
+                ProductWaitList.objects.create(
+                    product=product,
+                    customer=validated_data["customer"],
+                    quantity_need=quantity
+                )
+        return valid
+
     def create(self, validated_data):
+        if not self.is_sufficient_quantity_available(validated_data):
+            raise serializers.ValidationError(
+                "Некоторых товаров не хватает"
+            )
+
         items_data = validated_data.pop("items")
         order = Order.objects.create(**validated_data)
         for item_data in items_data:

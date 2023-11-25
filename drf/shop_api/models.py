@@ -139,3 +139,13 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.price = self.product.price
         super().save(*args, **kwargs)
+
+
+class ProductWaitList(models.Model):
+    product = models.ForeignKey(
+        Product, related_name="waits", on_delete=models.CASCADE
+    )
+    customer = models.ForeignKey(
+        User, related_name="waits", on_delete=models.CASCADE
+    )
+    quantity_need = models.PositiveIntegerField()
