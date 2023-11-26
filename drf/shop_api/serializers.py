@@ -47,31 +47,29 @@ class OptOrderSerializer(serializers.ModelSerializer):
         read_only_fields = ("created_at", "updated_at")
 
     @staticmethod
-    def is_sufficient_quantity_available(validated_data):
+    def validate_sufficient_quantity(validated_data):
         '''
-        Более общий случай, когда товар есть, но клиент заказал больше
+        Проверка на наличие нужного кол-ва каждого товара
+        Если товара нет на складе, будет создана запись в wait-list
         '''
         items_data = validated_data["items"]
         valid = True
         for item_data in items_data:
             product = item_data["product"]
             quantity = item_data["quantity"]
-            if quantity > product.in_stock:
+            in_stock = product.in_stock
+            if quantity > in_stock:
                 valid = False
-                ProductWaitList.objects.update_or_create(
-                    product=product,
-                    customer=validated_data["customer"],
-                    defaults={"quantity_need": quantity}
-                )
-            else:
-                ProductWaitList.objects.filter(
-                    product=product, customer=validated_data["customer"]
-                ).delete()
+                if in_stock == 0:
+                    ProductWaitList.objects.get_or_create(
+                        product=product,
+                        customer=validated_data["customer"],
+                    )
         return valid
 
     def create(self, validated_data):
         # проверка на наличие товаров на складе
-        if not self.is_sufficient_quantity_available(validated_data):
+        if not self.validate_sufficient_quantity(validated_data):
             raise serializers.ValidationError(
                 "Некоторых товаров не хватает"
             )

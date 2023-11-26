@@ -1,9 +1,12 @@
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.response import Response
 from .permissions import IsRepresentOrReadOnly
 from . import serializers
-from .models import User, Category, Product, Order
+from .models import User, Category, Product, Order, ProductWaitList
 from .filters import ProductFilter
+from .tasks import send_notification
 
 
 class UserListView(generics.ListCreateAPIView):
@@ -59,3 +62,19 @@ class OptOrderListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Order.objects.all()
     serializer_class = serializers.OptOrderSerializer
+
+
+class NotificationCreateView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        product_id = request.data["product"]
+        product = Product.objects.get(id=product_id)
+        if product.in_stock > 0:
+            subscribers = ProductWaitList.objects.filter(product=product_id)
+            send_notification.delay(
+                product_id,
+                list(subscribers.values_list('id', flat=True))
+            )
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(status=status.HTTP_204_NO_CONTENT)
