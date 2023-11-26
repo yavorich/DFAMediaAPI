@@ -13,6 +13,7 @@ services:
     environment:
       - DEBUG=True
       - DJANGO_SETTINGS_MODULE=rest.settings
+      - DJANGO_DB=postgresql
       - BROKER_URL=redis://redis:6379/0
       - RESULT_BACKEND=redis://redis:6379/0
       - POSTGRES_DB=postgres
@@ -50,6 +51,7 @@ services:
     environment:
       - DEBUG=True
       - DJANGO_SETTINGS_MODULE=rest.settings
+      - DJANGO_DB=postgresql
       - BROKER_URL=redis://redis:6379/0
       - RESULT_BACKEND=redis://redis:6379/0
       - POSTGRES_DB=postgres

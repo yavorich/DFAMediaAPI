@@ -127,15 +127,12 @@ REST_FRAMEWORK = {
 CELERY_BROKER_URL = os.environ.get("BROKER_URL", "redis://localhost:6379/0")
 CELERY_RESULT_BACKEND = os.environ.get("RESULT_BACKEND", "redis://localhost:6379/0")
 
-DB_SQLITE = "sqlite"
-DB_POSTGRESQL = "postgresql"
-
 DATABASES_ALL = {
-    DB_SQLITE: {
+    "sqlite": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    DB_POSTGRESQL: {
+    "postgresql": {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get("POSTGRES_DB", "postgres"),
         'USER': os.environ.get("POSTGRES_USER", "postgres"),
@@ -145,4 +142,4 @@ DATABASES_ALL = {
     }
 }
 
-DATABASES = {"default": DATABASES_ALL[os.environ.get("DJANGO_DB", DB_SQLITE)]}
+DATABASES = {"default": DATABASES_ALL[os.environ.get("DJANGO_DB", "sqlite")]}
