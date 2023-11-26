@@ -98,7 +98,7 @@ class Category(models.Model):
 
 class Product(models.Model):
     title = models.CharField(_("Название"), max_length=100)
-    description = models.CharField(max_length=250)
+    description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     in_stock = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -148,4 +148,10 @@ class ProductWaitList(models.Model):
     customer = models.ForeignKey(
         User, related_name="waits", on_delete=models.CASCADE
     )
-    quantity_need = models.PositiveIntegerField()
+
+
+class SpecialOffer(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    start_date = models.DateField()
+    end_date = models.DateField()
