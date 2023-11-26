@@ -11,5 +11,6 @@ urlpatterns = [
     path("products/", views.ProductListView.as_view(), name="product-list"),
     path("products/<int:pk>/", views.ProductDetailView.as_view(), name="product-detail"),
     path("opt-orders/", views.OptOrderListView.as_view(), name="opt-order"),
-    path("notification/", views.NotificationCreateView.as_view(), name="notification")
+    path("notification/", views.NotificationCreateView.as_view(), name="notification"),
+    path("special-offer/", views.SpecialOfferListView.as_view(), name="special-offer"),
 ]

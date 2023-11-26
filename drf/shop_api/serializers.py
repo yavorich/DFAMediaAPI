@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Category, Product, Order, \
-    User, OrderItem, ProductWaitList
+    User, OrderItem, ProductWaitList, SpecialOffer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -83,3 +83,9 @@ class OptOrderSerializer(serializers.ModelSerializer):
                 order=order, product=product, quantity=quantity
             )
         return order
+
+
+class SpecialOfferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpecialOffer
+        fields = "__all__"

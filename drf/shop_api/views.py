@@ -4,7 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from .permissions import IsRepresentOrReadOnly
 from . import serializers
-from .models import User, Category, Product, Order, ProductWaitList
+from .models import User, Category, Product, \
+    Order, ProductWaitList, SpecialOffer
 from .filters import ProductFilter
 from .tasks import send_notification
 
@@ -65,7 +66,7 @@ class OptOrderListView(generics.ListCreateAPIView):
 
 
 class NotificationCreateView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsRepresentOrReadOnly]
 
     def post(self, request):
         product_id = request.data["product"]
@@ -73,8 +74,35 @@ class NotificationCreateView(APIView):
         if product.in_stock > 0:
             subscribers = ProductWaitList.objects.filter(product=product_id)
             send_notification.delay(
-                product_id,
-                list(subscribers.values_list('id', flat=True))
+                product_id, list(subscribers.values_list("id", flat=True))
             )
             return Response(status=status.HTTP_201_CREATED)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SpecialOfferListView(APIView):
+    permission_classes = [IsRepresentOrReadOnly]
+
+    def get(self, request, format=None):
+        try:
+            special_offer = SpecialOffer.objects.first()
+        except SpecialOffer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = serializers.SpecialOfferSerializer(special_offer)
+        return Response(serializer.data)
+
+    def patch(self, request, format=None):
+        try:
+            special_offer = SpecialOffer.objects.first()
+        except SpecialOffer.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = serializers.SpecialOfferSerializer(
+            special_offer, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

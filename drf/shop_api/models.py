@@ -153,5 +153,5 @@ class ProductWaitList(models.Model):
 class SpecialOffer(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
