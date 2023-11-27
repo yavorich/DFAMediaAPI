@@ -173,8 +173,9 @@ class NotificationsTestCase(TransactionTestCase):
         # проверка корректности сообщения
         email = create_waitlist_email(product, subscriber)
         try:
-            with open("shop_api/logs/notifications.txt", "r") as f:
+            with open(save_path, "r") as f:
                 content = f.read()
                 self.assertEqual(content, email)
+            os.remove(save_path)
         except FileNotFoundError:
             pass

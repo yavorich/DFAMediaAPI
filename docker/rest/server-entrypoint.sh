@@ -15,9 +15,9 @@ done
 
 python manage.py collectstatic --noinput
 
-python manage.py createsuperuser --noinput
+# python manage.py createsuperuser --noinput
 
-python manage.py loaddata /app/rest/data.json
+# python manage.py loaddata /app/rest/data.json
 
 CELERY_EAGER=1 python manage.py test
 
