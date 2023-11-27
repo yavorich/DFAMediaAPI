@@ -145,9 +145,11 @@ DATABASES_ALL = {
         'NAME': os.environ.get("POSTGRES_DB", "postgres"),
         'USER': os.environ.get("POSTGRES_USER", "postgres"),
         'PASSWORD': os.environ.get("POSTGRES_PASSWORD", "postgres"),
-        'HOST': 'db',
+        'HOST': os.environ.get("POSTGRES_HOST", "localhost"),
         'PORT': 5432,
     }
 }
 
 DATABASES = {"default": DATABASES_ALL[os.environ.get("DJANGO_DB", "sqlite")]}
+
+CELERY_TASK_ALWAYS_EAGER = os.environ.get("CELERY_EAGER", False)
