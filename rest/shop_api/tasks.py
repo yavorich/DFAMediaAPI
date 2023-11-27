@@ -32,5 +32,5 @@ def send_special_offer():
     result = ""
     for user in users:
         result += create_special_offer_email(offer, user)
-    with open("shop_api/logs/offers.txt", "w") as f:
+    with open("shop_api/logs/offers.txt", "a") as f:
         f.write(result)

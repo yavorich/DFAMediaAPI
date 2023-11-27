@@ -47,7 +47,7 @@ services:
     restart: always
     entrypoint: ./docker/rest/worker-entrypoint.sh
     volumes:
-      - .:/code
+      - .:/app
     environment:
       - DEBUG=True
       - DJANGO_SETTINGS_MODULE=rest.settings
