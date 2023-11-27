@@ -1,8 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from .permissions import IsRepresentOrReadOnly
 from . import serializers
 from .models import User, Category, Product, \
     Order, ProductWaitList, SpecialOffer
@@ -11,62 +10,62 @@ from .tasks import send_notification
 
 
 class UserListView(generics.ListCreateAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
 
 class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [AllowAny]
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
 
 class CategoryListView(generics.ListCreateAPIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
 
 
 class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
 
 
 class ProductListView(generics.ListCreateAPIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
     filterset_class = ProductFilter
 
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
     queryset = Product.objects.all()
     serializer_class = serializers.ProductSerializer
 
 
 class OrderListView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
 
 
 class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Order.objects.all()
     serializer_class = serializers.OrderSerializer
 
 
 class OptOrderListView(generics.ListCreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Order.objects.all()
     serializer_class = serializers.OptOrderSerializer
 
 
 class NotificationCreateView(APIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         product_id = request.data["product"]
@@ -81,7 +80,7 @@ class NotificationCreateView(APIView):
 
 
 class SpecialOfferListView(APIView):
-    permission_classes = [IsRepresentOrReadOnly]
+    permission_classes = [AllowAny]
 
     def get(self, request, format=None):
         try:
